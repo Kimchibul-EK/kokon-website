@@ -20,6 +20,8 @@ const requiredFiles = [
   "js/publications.js",
   "supabase/migrations/202608280001_create_udgivelser.sql",
   "supabase/seed.sql",
+  "netlify/edge-functions/password-protection.js",
+  "robots.txt",
 ];
 
 for (const file of requiredFiles) await access(file);
@@ -36,11 +38,22 @@ const scripts = [
   "js/supabase.js",
   "js/publications.js",
   "js/publication-detail.js",
+  "netlify/edge-functions/password-protection.js",
 ];
 
 for (const file of scripts) {
   const result = spawnSync(process.execPath, ["--check", file], { encoding: "utf8" });
   if (result.status !== 0) throw new Error(`${file}: ${result.stderr}`);
+}
+
+const netlifyConfig = await readFile("netlify.toml", "utf8");
+const robots = await readFile("robots.txt", "utf8");
+const passwordProtection = await readFile("netlify/edge-functions/password-protection.js", "utf8");
+if (!netlifyConfig.includes('function = "password-protection"') || !netlifyConfig.includes("X-Robots-Tag")) {
+  throw new Error("Netlify must enable both demo password protection and noindex headers.");
+}
+if (!robots.includes("Disallow: /") || !passwordProtection.includes('Netlify.env.get("SITE_PASSWORD")')) {
+  throw new Error("Demo access or search-engine blocking is missing.");
 }
 
 const allHtml = await Promise.all(

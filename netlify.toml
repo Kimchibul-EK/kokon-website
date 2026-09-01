@@ -4,3 +4,16 @@
 
 [build.environment]
   NODE_VERSION = "22"
+
+# DEMOBESKYTTELSE: Fjern denne blok, når websitet skal være offentligt uden adgangskode.
+[[edge_functions]]
+  function = "password-protection"
+  path = "/*"
+  excludedPath = "/robots.txt"
+
+# SØGEMASKINER: Fjern denne blok sammen med noindex-indholdet i robots.txt,
+# når den officielle side må indekseres.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"

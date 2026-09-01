@@ -1,0 +1,3 @@
+# SØGEMASKINER: Fjern disse to linjer, når den officielle side må indekseres.
+User-agent: *
+Disallow: /
