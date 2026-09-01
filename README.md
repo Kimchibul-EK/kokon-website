@@ -15,11 +15,11 @@ Sitet præsenterer forlaget og dets japanske udgivelser, før brugeren sendes vi
 ## Kør projektet lokalt
 
 1. Kopiér `.env.example`, og kald kopien `.env`.
-2. Indsæt projektets offentlige Supabase-værdier:
+2. Indsæt projektets offentlige Supabase-værdier, som du har fået tilsendt af Kim.
 
    ```env
-   SUPABASE_URL=https://DIT-PROJEKT.supabase.co
-   SUPABASE_PUBLISHABLE_KEY=DIN-PUBLISHABLE-KEY
+   SUPABASE_URL=https://(...).supabase.co
+   SUPABASE_PUBLISHABLE_KEY=(...)
    ```
 
 3. Generér browserens Supabase-konfiguration:
@@ -31,7 +31,7 @@ Sitet præsenterer forlaget og dets japanske udgivelser, før brugeren sendes vi
 4. Start en lokal webserver fra projektets rod. HTML-filerne bør ikke åbnes direkte med `file://`.
 5. Åbn den lokale adresse i browseren.
 
-Kontaktadressen står som et almindeligt `mailto:`-link i `kontakt.html`. Filler-adressen skal erstattes med Kokons godkendte mail inden aflevering.
+Kontaktadressen står som et almindeligt `mailto:`-link i `kontakt.html`. Adressen skal erstattes når Kokon får en mailadresse.
 
 ## Projektkontrol
 
@@ -53,17 +53,6 @@ scripts/             Build- og kontrolscripts
 supabase/            Databaseskema, read-only RLS og seed-data
 *.html               Sitets statiske sider og fælles bogskabelon
 ```
-
-## Supabase
-
-Supabase-tabellen `udgivelser` indeholder de fem bøger. Browseren må kun læse data gennem projektets publishable key. Row Level Security tillader offentlig `SELECT`, men afviser `INSERT`, `UPDATE` og `DELETE`.
-
-Databasefilerne findes her:
-
-- `supabase/migrations/202608280001_create_udgivelser.sql`
-- `supabase/seed.sql`
-
-Brug aldrig en secret- eller service-role-key i browserkode, GitHub eller Netlify.
 
 ## Sider
 
