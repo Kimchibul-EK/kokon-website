@@ -1,0 +1,10 @@
+{
+  "name": "kokon-website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/generate-config.mjs",
+    "check": "node scripts/check-project.mjs"
+  }
+}
