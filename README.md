@@ -74,7 +74,3 @@ Netlify-demoen er beskyttet af Edge Function-filen `netlify/edge-functions/passw
 Opret miljøvariablen `SITE_PASSWORD` i Netlify, og giv den scope til **Functions**. Adgangskoden må ikke skrives direkte i kode eller pushes til GitHub. Efter en korrekt kode gemmer browseren en sikker adgangscookie i 24 timer.
 
 Søgemaskiner blokeres med både `robots.txt` og headeren `X-Robots-Tag`. Kommentarerne i `netlify.toml` og `robots.txt` viser, hvad der senere skal fjernes, når websitet skal være offentligt og søgbart.
-
-## Projektdokumentation
-
-Beslutninger, indholdskilder, forbedringslog og QA-evidens vedligeholdes i [Kokon-projektet i Notion](https://app.notion.com/p/3adb53f21201815692c1d098e0188b95). README’en indeholder kun den information, der er nødvendig for at forstå, køre og kontrollere koden.
