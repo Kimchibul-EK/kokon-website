@@ -1,3 +1,6 @@
+-- Opretter Supabase-tabellen til udgivelser samt reglerne for offentlig read-only-adgang.
+-- Filen bruges til at genskabe den samme databasestruktur og RLS-sikkerhed i et nyt projekt.
+
 create extension if not exists pgcrypto;
 
 create table if not exists public.udgivelser (

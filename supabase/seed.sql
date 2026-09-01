@@ -1,5 +1,5 @@
--- Kokon: fem faktatjekkede arbejdsposter til live Supabase.
--- Kan køres igen: eksisterende rækker opdateres ud fra slug.
+-- Indsætter Kokons fem udgivelser i Supabase med de data og billedstier, websitet bruger.
+-- Filen kan køres igen: eksisterende rækker opdateres ud fra deres slug.
 
 insert into public.udgivelser (
   slug,
