@@ -1,45 +1,83 @@
 # Kokon website
 
-Mobile-first website for Forlaget Kokon, built with semantic HTML, CSS and JavaScript. Only `Udgivelse` is dynamic Supabase content.
+Et mobile-first website for Forlaget Kokon, udviklet som eksamensprojekt på multimediedesigneruddannelsen.
 
-## Run locally
+Sitet præsenterer forlaget og dets japanske udgivelser, før brugeren sendes videre til en ekstern forhandler. Løsningen er bygget med semantisk HTML, CSS og almindelig JavaScript. Kun indholdstypen `Udgivelse` hentes dynamisk fra Supabase.
 
-1. Copy `.env.example` to `.env`.
-2. Add the available public environment values.
-3. Generate the browser configuration:
+## Teknologier
 
-   ```sh
+- HTML
+- CSS
+- JavaScript
+- Supabase
+- Netlify
+
+## Kør projektet lokalt
+
+1. Kopiér `.env.example`, og kald kopien `.env`.
+2. Indsæt projektets offentlige Supabase-værdier:
+
+   ```env
+   SUPABASE_URL=https://DIT-PROJEKT.supabase.co
+   SUPABASE_PUBLISHABLE_KEY=DIN-PUBLISHABLE-KEY
+   ```
+
+3. Generér browserens Supabase-konfiguration:
+
+   ```bash
    npm run build
    ```
 
-4. Serve the project root through a local web server. Do not open the pages with `file://`.
-5. Validate the project before a checkpoint:
+4. Start en lokal webserver fra projektets rod. HTML-filerne bør ikke åbnes direkte med `file://`.
+5. Åbn den lokale adresse i browseren.
 
-   ```sh
-   npm run check
-   ```
+Kontaktadressen står som et almindeligt `mailto:`-link i `kontakt.html`. Filler-adressen skal erstattes med Kokons godkendte mail inden aflevering.
 
-Publication pages require valid Supabase settings. If the configuration is missing or the request fails, the website shows a clear error instead of silently displaying a second local copy of the catalogue.
+## Projektkontrol
 
-## Public environment values
+Kør kontrollen før et commit eller deployment:
 
-- `SUPABASE_URL`
-- `SUPABASE_PUBLISHABLE_KEY`
-Never use a secret or service-role key in browser code or GitHub.
-
-## Structure
-
-```text
-assets/images/        Local WebP and SVG assets
-css/                  Layout and visual styling
-js/                   Necessary behaviour and Supabase data access
-*.html                Static pages and shared detail template
-supabase/              Database schema, read-only RLS and repeatable seed data
-scripts/              Config generation and project validation
+```bash
+npm run check
 ```
 
-Publication details use `/udgivelse.html?slug=BOOK-SLUG`. Netlify runs `npm run build` and publishes the project root (`.`).
+Kontrollen gennemgår blandt andet nødvendige filer, lokale links, billedstier, Supabase-felter og JavaScript-syntaks.
 
-## Project documentation
+## Mappestruktur
 
-Decisions, content guidance, sources, QA evidence, improvements and manual GitHub/Supabase/Netlify setup are maintained in the [Kokon Notion project](https://app.notion.com/p/3adb53f21201815692c1d098e0188b95). The repository README is intentionally limited to the information needed to run and validate the code.
+```text
+assets/images/       Lokale WebP- og SVG-billeder
+css/                 Layout og visuel styling
+js/                  Navigation, tema, karussel og Supabase-data
+scripts/             Build- og kontrolscripts
+supabase/            Databaseskema, read-only RLS og seed-data
+*.html               Sitets statiske sider og fælles bogskabelon
+```
+
+## Supabase
+
+Supabase-tabellen `udgivelser` indeholder de fem bøger. Browseren må kun læse data gennem projektets publishable key. Row Level Security tillader offentlig `SELECT`, men afviser `INSERT`, `UPDATE` og `DELETE`.
+
+Databasefilerne findes her:
+
+- `supabase/migrations/202608280001_create_udgivelser.sql`
+- `supabase/seed.sql`
+
+Brug aldrig en secret- eller service-role-key i browserkode, GitHub eller Netlify.
+
+## Sider
+
+- Forside: `index.html`
+- Udgivelser: `udgivelser.html`
+- Udgivelsesdetalje: `udgivelse.html?slug=BOG-SLUG`
+- Om Kokon: `om-kokon.html`
+- Kontakt: `kontakt.html`
+- Presse og materialer: `presse-materialer.html`
+
+## Deployment
+
+Netlify skal køre `npm run build` og publicere projektets rod (`.`). De to offentlige Supabase-værdier tilføjes som miljøvariabler i Netlify.
+
+## Projektdokumentation
+
+Beslutninger, indholdskilder, forbedringslog og QA-evidens vedligeholdes i [Kokon-projektet i Notion](https://app.notion.com/p/3adb53f21201815692c1d098e0188b95). README’en indeholder kun den information, der er nødvendig for at forstå, køre og kontrollere koden.
