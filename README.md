@@ -31,7 +31,7 @@ Sitet præsenterer forlaget og dets japanske udgivelser, før brugeren sendes vi
 4. Start en lokal webserver fra projektets rod. HTML-filerne bør ikke åbnes direkte med `file://`.
 5. Åbn den lokale adresse i browseren.
 
-Kontaktadressen står som et almindeligt `mailto:`-link i `kontakt.html`. Adressen skal erstattes når Kokon får en mailadresse.
+Kokon har endnu ikke en offentlig mailadresse. Kontaktsiden henviser derfor kun til forlagets verificerede Instagram- og Facebook-kanaler.
 
 ## Projektkontrol
 
