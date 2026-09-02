@@ -140,10 +140,9 @@ if (manualDarkTheme.theme !== "dark" || manualDarkTheme.themePreference !== "dar
 }
 
 const contactHtml = await readFile("kontakt.html", "utf8");
-if (/<form[\s>]/i.test(contactHtml)) throw new Error("Contact must remain a simple utility page without a form.");
-if (/href="mailto:/i.test(contactHtml)) throw new Error("Contact must not promise an email address that Kokon does not have.");
-if (!contactHtml.includes("instagram.com/forlagetkokon/") || !contactHtml.includes("facebook.com/profile.php?id=61572699365491")) {
-  throw new Error("Contact must contain Kokon's verified Instagram and Facebook links.");
+if (/<form[\s>]/i.test(contactHtml)) throw new Error("Contact must remain a direct-email page without a form.");
+if (!/href="mailto:[^"@\s]+@[^"@\s]+\.[^"\s]+"/i.test(contactHtml)) {
+  throw new Error("Contact must contain a static mailto link.");
 }
 
 const redirectConfig = await readFile("netlify.toml", "utf8");
