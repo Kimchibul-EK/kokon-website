@@ -5,6 +5,7 @@ const themeButton = document.querySelector(".tema-knap");
 const themeLabel = document.querySelector("[data-theme-label]");
 const backgroundContent = document.querySelectorAll("main, .sidefod-baggrund");
 
+// Lukker mobilmenuen og kan sende tastaturfokus tilbage til menuknappen.
 function closeMenu({ restoreFocus = false } = {}) {
   if (!menuButton || !navigation) return;
   menuButton.setAttribute("aria-expanded", "false");
@@ -15,6 +16,7 @@ function closeMenu({ restoreFocus = false } = {}) {
   if (restoreFocus) menuButton.focus();
 }
 
+// Åbner eller lukker mobilmenuen og skjuler resten af siden for tastaturnavigation.
 menuButton?.addEventListener("click", () => {
   const willOpen = menuButton.getAttribute("aria-expanded") !== "true";
   menuButton.setAttribute("aria-expanded", String(willOpen));
@@ -39,6 +41,7 @@ matchMedia("(min-width: 64rem)").addEventListener("change", (event) => {
   if (event.matches) closeMenu();
 });
 
+// Holder temaknappens tekst og tilgængelighedsbeskrivelse ajour.
 function updateThemeControl() {
   if (!themeButton || !themeLabel) return;
   const isDark = document.documentElement.dataset.theme === "dark";
@@ -49,6 +52,7 @@ function updateThemeControl() {
 
 updateThemeControl();
 
+// Gemmer brugerens manuelle valg, så temaet huskes ved næste besøg.
 themeButton?.addEventListener("click", () => {
   const theme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
   document.documentElement.dataset.theme = theme;
@@ -57,6 +61,7 @@ themeButton?.addEventListener("click", () => {
   updateThemeControl();
 });
 
+// Følger kun systemets temaændring, når brugeren ikke selv har valgt et tema.
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
   if (document.documentElement.dataset.themePreference !== "system") return;
   document.documentElement.dataset.theme = event.matches ? "dark" : "light";

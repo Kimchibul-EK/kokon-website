@@ -3,6 +3,7 @@ import { selectPublications } from "./supabase.js";
 
 const container = document.querySelector("[data-publications]");
 
+// Gør tekst fra databasen sikker at sætte ind i HTML.
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>'"]/g, (character) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;",
@@ -13,12 +14,14 @@ function publicationUrl(slug) {
   return `/udgivelse.html?slug=${encodeURIComponent(slug)}`;
 }
 
+// Forkorter den fulde bogbeskrivelse til en kort tekst på oversigtskortet.
 function previewText(description, maxWords = 22) {
   const words = String(description ?? "").trim().split(/\s+/).filter(Boolean);
   if (words.length <= maxWords) return words.join(" ");
   return `${words.slice(0, maxWords).join(" ")} (...)`;
 }
 
+// Bygger HTML til ét bogkort.
 function card(publication) {
   return `<article class="bogkort">
     <a href="${publicationUrl(publication.slug)}" aria-label="Læs om ${escapeHtml(publication.titel)}">
@@ -36,6 +39,7 @@ function card(publication) {
   </article>`;
 }
 
+// Henter alle bøger og viser enten kortene eller en statusbesked.
 async function load() {
   try {
     const publications = await selectPublications();

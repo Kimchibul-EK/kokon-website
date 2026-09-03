@@ -4,6 +4,7 @@ const COOKIE_NAME = "kokon_demo_access";
 const COOKIE_LIFETIME_SECONDS = 60 * 60 * 24;
 const encoder = new TextEncoder();
 
+// Bygger den lille login-side, som vises før selve demoen.
 function htmlPage(message = "") {
   const errorMessage = message
     ? `<p class="fejl" role="alert">${message}</p>`
@@ -49,6 +50,7 @@ function htmlPage(message = "") {
 </html>`;
 }
 
+// Sender login-siden med noindex og uden browser-cache.
 function htmlResponse(message = "", status = 401) {
   return new Response(htmlPage(message), {
     status,
@@ -60,6 +62,7 @@ function htmlResponse(message = "", status = 401) {
   });
 }
 
+// Omdanner signaturen til et format, der kan gemmes sikkert i en cookie.
 function toBase64Url(bytes) {
   return btoa(String.fromCharCode(...bytes))
     .replaceAll("+", "-")
@@ -67,6 +70,7 @@ function toBase64Url(bytes) {
     .replaceAll("=", "");
 }
 
+// Signerer cookiens udløbstid med demoens adgangskode.
 async function sign(value, secret) {
   const key = await crypto.subtle.importKey(
     "raw",
@@ -79,6 +83,7 @@ async function sign(value, secret) {
   return toBase64Url(new Uint8Array(signature));
 }
 
+// Finder demoens adgangscookie i browserens request.
 function readCookie(request) {
   const cookieHeader = request.headers.get("cookie") ?? "";
   const cookie = cookieHeader
@@ -88,12 +93,14 @@ function readCookie(request) {
   return cookie?.slice(COOKIE_NAME.length + 1) ?? "";
 }
 
+// Godkender kun en cookie, hvis den ikke er udløbet og har den rigtige signatur.
 async function hasValidCookie(request, secret) {
   const [expires, signature] = readCookie(request).split(".");
   if (!expires || !signature || Number(expires) <= Date.now()) return false;
   return signature === await sign(expires, secret);
 }
 
+// Tilføjer private cache- og noindex-headere til det beskyttede website.
 function protectedResponse(response) {
   const headers = new Headers(response.headers);
   headers.set("Cache-Control", "private, no-store");
@@ -105,6 +112,7 @@ function protectedResponse(response) {
   });
 }
 
+// Netlifys hovedfunktion: viser login, godkender kode eller sender siden videre.
 export default async function passwordProtection(request, context) {
   const password = Netlify.env.get("SITE_PASSWORD");
 

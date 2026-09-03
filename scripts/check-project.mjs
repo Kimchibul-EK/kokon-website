@@ -24,8 +24,10 @@ const requiredFiles = [
   "robots.txt",
 ];
 
+// Kontrollerer at alle nødvendige projektfiler findes.
 for (const file of requiredFiles) await access(file);
 
+// Kontrollerer CSS-opdelingen og JavaScript-filernes syntaks.
 const globalCss = await readFile("css/global.css", "utf8");
 if (!globalCss.includes('url("./layout.css")') || !globalCss.includes('url("./styling.css")')) {
   throw new Error("global.css must load both layout.css and styling.css.");
@@ -46,6 +48,7 @@ for (const file of scripts) {
   if (result.status !== 0) throw new Error(`${file}: ${result.stderr}`);
 }
 
+// Kontrollerer demoens adgangskodebeskyttelse og blokering af søgemaskiner.
 const netlifyConfig = await readFile("netlify.toml", "utf8");
 const robots = await readFile("robots.txt", "utf8");
 const passwordProtection = await readFile("netlify/edge-functions/password-protection.js", "utf8");
@@ -56,6 +59,7 @@ if (!robots.includes("Disallow: /") || !passwordProtection.includes('Netlify.env
   throw new Error("Demo access or search-engine blocking is missing.");
 }
 
+// Kontrollerer fælles HTML-struktur, favicon og alt-tekster.
 const allHtml = await Promise.all(
   requiredFiles.filter((file) => file.endsWith(".html")).map((file) => readFile(file, "utf8")),
 );
@@ -74,6 +78,7 @@ for (const [index, html] of allHtml.entries()) {
   }
 }
 
+// Kontrollerer at lokale links, billeder og andre filhenvisninger findes.
 for (const [index, html] of allHtml.entries()) {
   const references = [...html.matchAll(/(?:href|src)="([^"]+)"/g)].map((match) => match[1]);
   for (const reference of references) {
@@ -85,6 +90,7 @@ for (const [index, html] of allHtml.entries()) {
   }
 }
 
+// Kontrollerer at de fem bøger, deres billeder og Supabase-felter er dokumenteret.
 const factFields = ["isbn", "sidetal", "format_bind", "sprog", "dansk_udgivelsesaar", "originaludgivelsesaar", "originaltitel"];
 const seed = await readFile("supabase/seed.sql", "utf8");
 const publicationSlugs = ["flaskepost-fra-helvede", "uegnet-som-menneske", "ti-naetters-droemme", "citronen", "vi-er-en-kat-del-1"];
@@ -103,6 +109,8 @@ for (const field of ["forfatter_kilde", ...factFields]) {
   }
 }
 const detailSource = await readFile("js/publication-detail.js", "utf8");
+
+// Kontrollerer centrale dele af detaljesiden og billedkarusellen.
 if (!detailSource.includes("Mere om bogen") || !detailSource.includes('<dl class="bogfakta">')) {
   throw new Error("The shared detail template must contain the static book-facts definition list.");
 }
@@ -112,6 +120,7 @@ if (detailSource.includes("Billeder og formidling") || !detailSource.includes("v
   throw new Error("Detail images must use the manual multi-image carousel with arrows and dots.");
 }
 
+// Afprøver temavalget uden at åbne en browser.
 const themeSource = await readFile("js/theme-init.js", "utf8");
 function resolveTheme(storedTheme, systemIsDark) {
   const sandbox = {
@@ -139,15 +148,18 @@ if (manualDarkTheme.theme !== "dark" || manualDarkTheme.themePreference !== "dar
   throw new Error("Saved dark theme preference is not initialized correctly.");
 }
 
+// Kontrollerer den valgte kontaktløsning uden formular.
 const contactHtml = await readFile("kontakt.html", "utf8");
 if (/<form[\s>]/i.test(contactHtml)) throw new Error("Contact must remain a direct-email page without a form.");
 if (!/href="mailto:[^"@\s]+@[^"@\s]+\.[^"\s]+"/i.test(contactHtml)) {
   throw new Error("Contact must contain a static mailto link.");
 }
 
+// Sikrer at projektet fortsat bruger de enkle HTML-adresser uden redirects.
 const redirectConfig = await readFile("netlify.toml", "utf8");
 if (/\[\[redirects\]\]/i.test(redirectConfig)) throw new Error("Redirect rules are outside the approved implementation.");
 
+// Afviser secret- og service-role-nøgler i JavaScript, der sendes til browseren.
 const browserScripts = await Promise.all(scripts.map((file) => readFile(file, "utf8")));
 const generatedConfig = await readFile("js/config.js", "utf8");
 if ([...browserScripts, generatedConfig].some((source) => /sb_secret_|service[_-]?role/i.test(source))) {

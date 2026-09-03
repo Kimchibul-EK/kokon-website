@@ -1,4 +1,5 @@
 // Samler forbindelsen til Supabase og henter de udgivelsesdata, som siderne bruger.
+// Læser den offentlige URL og publishable key, som build-scriptet har gjort tilgængelige.
 function getConfig() {
   const config = window.KOKON_CONFIG ?? {};
   const url = String(config.supabaseUrl ?? "").replace(/\/$/, "");
@@ -6,6 +7,7 @@ function getConfig() {
   return url && key ? { url, key } : null;
 }
 
+// Kalder Supabase REST API og returnerer alle udgivelser i datoorden.
 export async function selectPublications() {
   const config = getConfig();
   if (!config) {

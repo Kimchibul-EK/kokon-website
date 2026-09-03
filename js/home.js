@@ -3,12 +3,14 @@ import { selectPublications } from "./supabase.js";
 
 const container = document.querySelector("[data-featured-publication]");
 
+// Gør tekst fra databasen sikker at sætte ind i HTML.
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>'"]/g, (character) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;",
   })[character]);
 }
 
+// Vælger den fremhævede bog og bygger forsidesektionen.
 async function loadFeatured() {
   try {
     const publications = await selectPublications();

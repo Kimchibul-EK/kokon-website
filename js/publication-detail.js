@@ -6,6 +6,7 @@ const exitDialog = document.querySelector("#exit-dialog");
 let externalUrls = [];
 let exitDialogTrigger = null;
 
+// Hjælpefunktioner til sikker tekst, URL-parameter og tekstafsnit.
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>'"]/g, (character) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;",
@@ -36,6 +37,7 @@ function factValue(value) {
     : String(value);
 }
 
+// Formaterer bogens danske udgivelsesdato, når en gyldig dato findes.
 function danishPublication(publication) {
   if (publication.udgivelsesdato) {
     const date = new Date(`${publication.udgivelsesdato}T12:00:00`);
@@ -46,6 +48,7 @@ function danishPublication(publication) {
   return publication.dansk_udgivelsesaar ?? null;
 }
 
+// Bygger de forskellige indholdssektioner på bogens detaljeside.
 function bookFactsSection(publication) {
   const facts = [
     ["ISBN", publication.isbn],
@@ -100,6 +103,7 @@ function detailImageSection(images) {
   </div>`;
 }
 
+// Gør pile, prikker, scrolling og tastaturstyring aktive i hver karussel.
 function initializeCarousels() {
   container.querySelectorAll("[data-carousel]").forEach((carousel) => {
     const track = carousel.querySelector(".er-karusel");
@@ -147,6 +151,7 @@ function initializeCarousels() {
   });
 }
 
+// Gemmer kun gyldige eksterne links og bygger knapperne til dem.
 function externalLinkSection(links) {
   if (!Array.isArray(links) || links.length === 0) return "";
   externalUrls = links.filter((link) => {
@@ -160,6 +165,7 @@ function externalLinkSection(links) {
   ).join("")}</div></section>`;
 }
 
+// Bygger et bogkort til sektionen med relaterede udgivelser.
 function relatedCard(publication) {
   return `<article class="bogkort"><a href="/udgivelse.html?slug=${encodeURIComponent(publication.slug)}">
     <div class="bogforside-ramme"><img src="${escapeHtml(publication.forside_sti)}" alt="${escapeHtml(publication.forside_alt)}" loading="lazy" width="600" height="760"></div>
@@ -167,6 +173,7 @@ function relatedCard(publication) {
   </a></article>`;
 }
 
+// Samler alle dele og skriver den valgte udgivelse ind på siden.
 function render(publication, related) {
   document.title = `${publication.titel} · Kokon`;
   document.querySelector('meta[name="description"]')?.setAttribute("content", publication.kort_beskrivelse);
@@ -210,6 +217,7 @@ function render(publication, related) {
   initializeCarousels();
 }
 
+// Viser exit-dialogen, før brugeren forlader Kokons website.
 function openExitDialog(index, trigger) {
   const external = externalUrls[index];
   if (!external) return;
@@ -227,6 +235,7 @@ function closeExitDialog() {
   if (exitDialogTrigger?.isConnected) exitDialogTrigger.focus();
 }
 
+// Henter den rigtige udgivelse ud fra sidens slug og håndterer fejltilstande.
 async function load() {
   const slug = getSlug();
   if (!slug) {

@@ -1,4 +1,5 @@
 // Vælger gemt eller systemstyret tema, før siden bliver vist.
+// Filen kører tidligt for at undgå et kort blink med det forkerte tema.
 (() => {
   const stored = localStorage.getItem("kokon-theme");
   const theme = stored === "light" || stored === "dark"

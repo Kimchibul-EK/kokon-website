@@ -1,6 +1,7 @@
 // Læser de lokale miljøværdier og genererer browserens offentlige Supabase-konfiguration.
 import { readFile, writeFile } from "node:fs/promises";
 
+// Læser .env lokalt og kopierer værdierne til denne Node-proces.
 async function loadLocalEnv() {
   let source;
   try {
@@ -26,10 +27,12 @@ await loadLocalEnv();
 const url = process.env.SUPABASE_URL ?? "";
 const publishableKey = process.env.SUPABASE_PUBLISHABLE_KEY ?? "";
 
+// Afviser hemmelige Supabase-nøgler, fordi config.js bliver sendt til browseren.
 if (/sb_secret_|service[_-]?role/i.test(publishableKey)) {
   throw new Error("SUPABASE_PUBLISHABLE_KEY must not contain a secret or service-role key.");
 }
 
+// Skriver kun den offentlige Supabase-konfiguration til den genererede browserfil.
 const config = `// Indeholder den offentlige Supabase-konfiguration, som genereres under build.\nwindow.KOKON_CONFIG = ${JSON.stringify({
   supabaseUrl: url,
   supabasePublishableKey: publishableKey,
