@@ -1,54 +1,55 @@
 // Henter udgivelser fra Supabase og bygger bogkortene på udgivelsesoversigten.
-import { selectPublications } from "./supabase.js";
+import { hentUdgivelser } from "./supabase.js";
 
-const container = document.querySelector("[data-publications]");
+const udgivelsesfelt = document.querySelector("[data-publications]");
 
 // Gør tekst fra databasen sikker at sætte ind i HTML.
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>'"]/g, (character) => ({
+function beskytHtml(vaerdi) {
+  return String(vaerdi ?? "").replace(/[&<>'"]/g, (tegn) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;",
-  })[character]);
+  })[tegn]);
 }
 
-function publicationUrl(slug) {
+function udgivelsesUrl(slug) {
   return `/udgivelse.html?slug=${encodeURIComponent(slug)}`;
 }
 
 // Forkorter den fulde bogbeskrivelse til en kort tekst på oversigtskortet.
-function previewText(description, maxWords = 22) {
-  const words = String(description ?? "").trim().split(/\s+/).filter(Boolean);
-  if (words.length <= maxWords) return words.join(" ");
-  return `${words.slice(0, maxWords).join(" ")} (...)`;
+function lavKortTekst(beskrivelse, maksOrd = 22) {
+  const ord = String(beskrivelse ?? "").trim().split(/\s+/).filter(Boolean);
+  if (ord.length <= maksOrd) return ord.join(" ");
+  return `${ord.slice(0, maksOrd).join(" ")} (...)`;
 }
 
-// Bygger HTML til ét bogkort.
-function card(publication) {
+// Nye udgivelser oprettes som nye rækker i Supabase. Derefter laver denne
+// funktion automatisk et nyt bogkort, så man ikke skal skrive mere HTML her.
+function lavBogkort(udgivelse) {
   return `<article class="bogkort">
-    <a href="${publicationUrl(publication.slug)}" aria-label="Læs om ${escapeHtml(publication.titel)}">
+    <a href="${udgivelsesUrl(udgivelse.slug)}" aria-label="Læs om ${beskytHtml(udgivelse.titel)}">
       <div class="bogforside-ramme">
-        <img src="${escapeHtml(publication.forside_sti)}" alt="${escapeHtml(publication.forside_alt)}" loading="lazy" width="600" height="760">
+        <img src="${beskytHtml(udgivelse.forside_sti)}" alt="${beskytHtml(udgivelse.forside_alt)}" loading="lazy" width="600" height="760">
       </div>
       <div class="bogkort-indhold">
         <p class="overlinje">Udgivelse</p>
-        <h2>${escapeHtml(publication.titel)}</h2>
-        <p class="bogforfatter">${escapeHtml(publication.forfatter)}</p>
-        <p class="bogbeskrivelse">${escapeHtml(previewText(publication.beskrivelse || publication.kort_beskrivelse))}</p>
-        <span class="tekstlink">Læs om udgivelsen <span aria-hidden="true">→</span></span>
+        <h2>${beskytHtml(udgivelse.titel)}</h2>
+        <p class="bogforfatter">${beskytHtml(udgivelse.forfatter)}</p>
+        <p class="bogbeskrivelse">${beskytHtml(lavKortTekst(udgivelse.beskrivelse || udgivelse.kort_beskrivelse))}</p>
+        <span class="tekstlink"><span class="tekstlink-tekst">Læs om udgivelsen</span><span aria-hidden="true">→</span></span>
       </div>
     </a>
   </article>`;
 }
 
 // Henter alle bøger og viser enten kortene eller en statusbesked.
-async function load() {
+async function visUdgivelser() {
   try {
-    const publications = await selectPublications();
-    container.innerHTML = publications.length
-      ? publications.map(card).join("")
+    const udgivelser = await hentUdgivelser();
+    udgivelsesfelt.innerHTML = udgivelser.length
+      ? udgivelser.map(lavBogkort).join("")
       : '<p class="statusbesked indlaesningsfelt">Der er endnu ingen udgivelser i kataloget.</p>';
   } catch (error) {
-    container.innerHTML = `<p class="statusbesked indlaesningsfelt" role="status">${escapeHtml(error.message)}</p>`;
+    udgivelsesfelt.innerHTML = `<p class="statusbesked indlaesningsfelt" role="status">${beskytHtml(error.message)}</p>`;
   }
 }
 
-if (container) load();
+if (udgivelsesfelt) visUdgivelser();

@@ -1,10 +1,17 @@
 // Vælger gemt eller systemstyret tema, før siden bliver vist.
 // Filen kører tidligt for at undgå et kort blink med det forkerte tema.
 (() => {
-  const stored = localStorage.getItem("kokon-theme");
-  const theme = stored === "light" || stored === "dark"
-    ? stored
-    : matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-  document.documentElement.dataset.theme = theme;
-  document.documentElement.dataset.themePreference = stored || "system";
+  const gemtTema = localStorage.getItem("kokon-theme");
+  let tema;
+
+  if (gemtTema === "light" || gemtTema === "dark") {
+    tema = gemtTema;
+  } else if (matchMedia("(prefers-color-scheme: dark)").matches) {
+    tema = "dark";
+  } else {
+    tema = "light";
+  }
+
+  document.documentElement.dataset.theme = tema;
+  document.documentElement.dataset.themePreference = gemtTema || "system";
 })();

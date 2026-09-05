@@ -114,9 +114,9 @@ const detailSource = await readFile("js/publication-detail.js", "utf8");
 if (!detailSource.includes("Mere om bogen") || !detailSource.includes('<dl class="bogfakta">')) {
   throw new Error("The shared detail template must contain the static book-facts definition list.");
 }
-if (detailSource.includes("Billeder og formidling") || !detailSource.includes("valid.length > 1")
+if (detailSource.includes("Billeder og formidling") || !detailSource.includes("harFlereBilleder")
   || !detailSource.includes("data-carousel-next") || !detailSource.includes("data-carousel-dot")
-  || !detailSource.includes("initializeCarousels")) {
+  || !detailSource.includes("startKaruseller")) {
   throw new Error("Detail images must use the manual multi-image carousel with arrows and dots.");
 }
 
