@@ -53,10 +53,7 @@ a {
   color: inherit;
   text-underline-offset: 0.25em;
 }
-button,
-input,
-textarea,
-select {
+button {
   font: inherit;
 }
 button,
@@ -65,8 +62,7 @@ a {
 }
 h1,
 h2,
-h3,
-.ui-tekst {
+h3 {
   color: var(--color-text);
   font-family: var(--font-ui);
   text-wrap: balance;
@@ -262,6 +258,13 @@ p {
   font-family: var(--font-ui);
   font-size: 0.9375rem;
   font-weight: 600;
+}
+.tekstlink {
+  text-decoration: none;
+}
+/* Kun teksten understreges; pilen er et separat span og får derfor ingen streg. */
+.tekstlink-tekst {
+  text-decoration: underline;
   text-decoration-thickness: 0.08em;
 }
 .tilbage-link {
