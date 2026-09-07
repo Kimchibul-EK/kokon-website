@@ -8,7 +8,6 @@
 
 body {
   margin: 0;
-  min-width: 20rem;
   min-height: 100vh;
 }
 
@@ -581,7 +580,8 @@ figcaption {
 }
 .sidefod-links-raekke {
   display: grid;
-  grid-template-columns: 1fr auto;
+  /* Tekstkolonnen må krympe, så sociale ikoner ikke gør footeren bredere end skærmen. */
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 1rem;
   align-items: start;
 }
@@ -646,18 +646,19 @@ dialog {
 /* ----------------------------- */
 
 @media (min-width: 42rem) {
+  /* minmax(0, 1fr) fordeler pladsen ligeligt. 0 lader kolonnen krympe, hvis billede eller tekst ellers ville skabe vandret overflow. */
   .bog-gitter {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .portal-gitter,
   .vaerdi-gitter {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
   .presse-gitter {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .bogfakta {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -719,7 +720,8 @@ dialog {
   }
 
   .forside-hero {
-    grid-template-columns: 0.92fr 1.08fr;
+    /* Begge kolonner må krympe, så hero-billedet holder sig inden for sidens bredde. */
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
     min-height: 38rem;
     gap: 5rem;
   }
@@ -739,7 +741,8 @@ dialog {
 
   .fremhaevet-layout,
   .delt-layout {
-    grid-template-columns: repeat(2, 1fr);
+    /* To lige brede kolonner, som fortsat kan tilpasse sig mindre desktopbredder. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 6rem;
   }
 
@@ -749,7 +752,8 @@ dialog {
   }
 
   .bog-gitter {
-    grid-template-columns: repeat(3, 1fr);
+    /* Bogkortene må krympe med indholdsområdet i stedet for at presse siden bredere. */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 2rem 1.5rem;
   }
 
@@ -758,8 +762,8 @@ dialog {
   }
 
   .detalje-hero {
-    /* Bogforsiden må ikke blive smallere end 22rem. Teksten får resten af pladsen. */
-    grid-template-columns: minmax(22rem, 0.82fr) 1.18fr;
+    /* Bogforsiden er mindst 22rem. Tekstkolonnen kan stadig krympe, så detaljesiden ikke får overflow. */
+    grid-template-columns: minmax(22rem, 0.82fr) minmax(0, 1.18fr);
     gap: 6rem;
     padding-top: 2.5rem;
   }
@@ -783,7 +787,8 @@ dialog {
   }
 
   .sidefod-navigation {
-    grid-template-columns: repeat(2, 1fr);
+    /* Linkkolonnerne kan krympe, så footeren passer på mindre desktopbredder. */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     align-content: start;
     column-gap: 2rem;
   }
